@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: yaarf
+Description: Yet Another Alert Reporting Framework (SNARF) client library
+Version: @VERSION@
+Libs: -L${libdir} -lyaarf @LDFLAGS@ @LIBS@ -ljson-glib-1.0
+Cflags: -I${includedir}
+Requires: glib-2.0 >= 2.10, json-glib-1.0 > 1.0
