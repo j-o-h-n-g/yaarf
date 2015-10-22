@@ -1,6 +1,7 @@
 # yaarf
 
-== Introduction == 
+## Introduction
+
 Yet Another Alert Reporting Framework
 
 A drop in replacement for snarf (http://tools.netsa.cert.org/snarf/) which instead HTTP POSTs
@@ -13,8 +14,7 @@ Then set SNARF_DESTINATION in pipeline.conf to the URL of your webservice.
 
 eg SNARF_DESTINATION=http://localhost/alert
 
-== NOTES ==
+## Notes
 
-Library is not complete.  Only the required functionality for analysis-pipeline is implemented.  Currently no
-support for including tcp flags.  Currently only supports analysis-pipeline 4.4.1
+Library is not complete.  Only the required functionality for analysis-pipeline is implemented.  Currently no support for including tcp flags.  Currently only supports analysis-pipeline 4.4.1
 
