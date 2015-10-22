@@ -13,9 +13,8 @@ BuildRequires: pkgconfig >= 0.8
 BuildRequires: glib2-devel > 2.10
 
 %description
-yaarf is a distributed alert reporting system. Applications can use yaarf's C
-and Python APIs to construct and send network alert messages, which can then be
-routed to multiple destinations in a configurable manner.
+yaarf is a distributed alert reporting system. It aims to be API compatible
+with snarf.
 
 %package devel
 Summary: Static libraries and C header files for libyaarf
