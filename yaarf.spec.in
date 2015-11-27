@@ -6,7 +6,7 @@ Group: Applications/System
 License: LGPLv2
 Source: yaarf-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-URL: https://github.com/j-o-h-n-g/yaarf
+URL: URL: https://github.com/j-o-h-n-g/yaarf
 Provides: libyaarf = %{version}
 Requires: glib2 >= 2.22
 BuildRequires: pkgconfig >= 0.8

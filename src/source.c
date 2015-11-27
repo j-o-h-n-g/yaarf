@@ -53,18 +53,18 @@ json_generator_set_root (generator, root);
 gchar * str = json_generator_to_data (generator, NULL);
 
 SoupMessage *soup_message;
-//soup_message = soup_message_new("POST",source->destination); //destination);
+soup_message = soup_message_new("POST",source->destination); //destination);
 
-soup_message_set_request(source->soup_message,"application/json",SOUP_MEMORY_COPY,str,strlen(str));
-guint status = soup_session_send_message(source->soup_session,source->soup_message);
+soup_message_set_request(soup_message,"application/json",SOUP_MEMORY_COPY,str,strlen(str));
+guint status = soup_session_send_message(source->soup_session,soup_message);
 
 if (status < 200 || status > 299) {
-	g_critical("Error connecting to webserver status=%d reason=%s\n",status,source->soup_message->reason_phrase);
+	g_critical("Error connecting to webserver status=%d reason=%s\n",status,soup_message->reason_phrase);
 	return -1;
 }
 
-// Send me
-//
+g_object_unref (soup_message);
+
 snarf_alert_free(alert);
 
 return 0;

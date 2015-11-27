@@ -3,6 +3,7 @@
 #include <snarf/snarf.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <time.h>
 
 #include <glib-object.h>
 #include <json-glib/json-glib.h>
@@ -26,7 +27,10 @@ json_builder_set_member_name(builder,"severity");
 json_builder_add_int_value (builder, severity);
 json_builder_set_member_name(builder,"timestamp");
 char jsontime[32];
-strftime(jsontime,20,"%Y-%m-%dT%H:%M:%SZ",localtime(&timestamp));
+time_t sectime=timestamp / (1000*1000);
+struct tm local;
+localtime_r(&sectime,&local);
+strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&local);
 json_builder_add_string_value(builder,jsontime);
 json_builder_end_object(builder);
 json_builder_set_member_name(builder,"body");
@@ -72,7 +76,10 @@ json_builder_begin_object(builder);
 
 json_builder_set_member_name(builder,"stime");
 char jsontime[32];
-strftime(jsontime,20,"%Y-%m-%dT%H:%M:%SZ",localtime(&stime));
+time_t sectime = stime / (1000*1000);
+struct tm local;
+localtime_r(&sectime,&local);
+strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&local);
 json_builder_add_string_value(builder,jsontime);
 
 json_builder_set_member_name(builder,"elapsed");
@@ -80,11 +87,11 @@ json_builder_add_int_value(builder,elapsed);
 
 struct in_addr ip;
 
-ip.s_addr=sip;
+ip.s_addr=htonl(sip);
 json_builder_set_member_name(builder,"sip");
 json_builder_add_string_value(builder,inet_ntoa(ip));
 
-ip.s_addr=dip;
+ip.s_addr=htonl(dip);
 json_builder_set_member_name(builder,"dip");
 json_builder_add_string_value(builder,inet_ntoa(ip));
 
