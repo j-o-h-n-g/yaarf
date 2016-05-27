@@ -28,9 +28,9 @@ json_builder_add_int_value (builder, severity);
 json_builder_set_member_name(builder,"timestamp");
 char jsontime[32];
 time_t sectime=timestamp / (1000*1000);
-struct tm local;
-localtime_r(&sectime,&local);
-strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&local);
+struct tm gmt;
+gmtime_r(&sectime,&gmt);
+strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&gmt);
 json_builder_add_string_value(builder,jsontime);
 json_builder_end_object(builder);
 json_builder_set_member_name(builder,"body");
@@ -51,6 +51,31 @@ snarf_alert_free(snarf_alert_t *alert)
   json_node_free (alert->msg);
   g_free (alert);
 
+
+}
+
+static GString* snarf_alert_flags_to_string(uint8_t flags) {
+
+GString *str = g_string_new(NULL); //TCPFLAGS_STRLEN);
+
+if (flags & FIN_FLAG)
+	g_string_append_c(str,'F');
+if (flags & SYN_FLAG)
+	g_string_append_c(str,'S');
+if (flags & RST_FLAG)
+        g_string_append_c(str,'R');
+if (flags & PSH_FLAG)
+        g_string_append_c(str,'P');
+if (flags & ACK_FLAG)
+        g_string_append_c(str,'A');
+if (flags & URG_FLAG)
+        g_string_append_c(str,'U');
+if (flags & ECE_FLAG)
+        g_string_append_c(str,'E');
+if (flags & CWR_FLAG)
+        g_string_append_c(str,'C');
+
+return str;
 
 }
 
@@ -77,9 +102,9 @@ json_builder_begin_object(builder);
 json_builder_set_member_name(builder,"stime");
 char jsontime[32];
 time_t sectime = stime / (1000*1000);
-struct tm local;
-localtime_r(&sectime,&local);
-strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&local);
+struct tm gmt;
+gmtime_r(&sectime,&gmt);
+strftime(jsontime,21,"%Y-%m-%dT%H:%M:%SZ",&gmt);
 json_builder_add_string_value(builder,jsontime);
 
 json_builder_set_member_name(builder,"elapsed");
@@ -112,13 +137,17 @@ json_builder_add_int_value(builder,bytes);
 
 // flags
 json_builder_set_member_name(builder,"flags");
-json_builder_add_string_value(builder,"");
-//TODO
+GString *flag_string = snarf_alert_flags_to_string(flags);
+json_builder_add_string_value(builder,flag_string->str);
+g_string_free(flag_string,TRUE);
+
 
 // flags initial
 json_builder_set_member_name(builder,"flags_initial");
-json_builder_add_string_value(builder,"");
-//TODO
+GString *flag_initial_string = snarf_alert_flags_to_string(flags_initial);
+json_builder_add_string_value(builder,flag_initial_string->str);
+//g_print(flag_initial_string);
+g_string_free(flag_initial_string,TRUE);
 
 // application id
 json_builder_set_member_name(builder,"application_id");
@@ -161,7 +190,7 @@ snarf_alert_add_flow_v6(
     char *sensor_name,
     char *flow_class, char *flow_type)
 {
-
+snarf_alert_add_text_field(alert,"add_flow_v6","MISSING");
 //NOOP
 
 
@@ -172,10 +201,30 @@ snarf_alert_add_ip_field_v4(snarf_alert_t *alert,
                             const char    *name,
                             uint32_t       value)
 {
+// Add IP field to body
+JsonNode *node;
 
-//NOOP
+JsonObject * rootobj = json_node_get_object (alert->msg);
+JsonObject * bodyobj = json_object_get_object_member(rootobj,"body");
+
+JsonNode * stringnode = json_node_alloc();
+
+struct in_addr ip;
+ip.s_addr=htonl(value);
+stringnode=json_node_init_string(stringnode,inet_ntoa(ip));
+json_object_set_member(bodyobj,name,stringnode);
 
 }
+
+void
+snarf_alert_add_ip_field_v6(snarf_alert_t *alert,
+                            const char    *name,
+                            uint8_t       value[16])
+{
+
+snarf_alert_add_text_field(alert,name,"ip_field_v6_MISSING");
+}
+
 
 void
 snarf_alert_add_text_field(snarf_alert_t *alert,
@@ -270,6 +319,7 @@ snarf_alert_add_ipset_field(snarf_alert_t *alert,
                             size_t         len)
 {
 
+snarf_alert_add_text_field(alert,name,"ipset_field_MISSING");
 //NOP    
 
 }    

@@ -6,14 +6,17 @@ Group: Applications/System
 License: LGPLv2
 Source: yaarf-%{version}.tar.gz
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-URL: URL: https://github.com/j-o-h-n-g/yaarf
+URL: http://tools.netsa.cert.org/snarf
+Vendor: CERT Network Situational Awareness <netsa-help@cert.org>
 Provides: libyaarf = %{version}
 Requires: glib2 >= 2.22
 BuildRequires: pkgconfig >= 0.8
 BuildRequires: glib2-devel > 2.10
 
 %description
-yaarf is a distributed alert reporting system. It aims to be API compatible with snarf.
+yaarf is a distributed alert reporting system. Applications can use yaarf's C
+and Python APIs to construct and send network alert messages, which can then be
+routed to multiple destinations in a configurable manner.
 
 %package devel
 Summary: Static libraries and C header files for libyaarf
