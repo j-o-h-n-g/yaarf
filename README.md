@@ -16,5 +16,5 @@ eg SNARF_DESTINATION=http://localhost/alert
 
 ## Notes
 
-Library is not complete.  Only the required functionality for analysis-pipeline is implemented.  Currently no support for including tcp flags.  Currently only supports analysis-pipeline 4.4.1
+Library is not complete.  Only the required functionality for analysis-pipeline is implemented.
 
